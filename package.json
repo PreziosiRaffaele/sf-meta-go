@@ -43,9 +43,6 @@
       "@oclif/plugin-help"
     ],
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
-      },
       "meta": {
         "description": "description for meta"
       }

@@ -1,11 +1,13 @@
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
+import { Messages, Connection } from '@salesforce/core';
+import { go } from '../../OpenMetadataHandler.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('sf-meta-go', 'meta.go');
 
 export type MetaGoResult = {
-  path: string;
+  isSuccess: boolean;
+  error?: string;
 };
 
 export default class MetaGo extends SfCommand<MetaGoResult> {
@@ -14,16 +16,35 @@ export default class MetaGo extends SfCommand<MetaGoResult> {
   public static readonly examples = messages.getMessages('examples');
 
   public static readonly flags = {
-    name: Flags.file,
+    metadata: Flags.file({
+      summary: messages.getMessage('flags.metadata.summary'),
+      char: 'f',
+      required: true,
+      exists: true,
+    }),
+    targetusername: Flags.requiredOrg({
+      summary: messages.getMessage('flags.targetusername.summary'),
+      char: 'o',
+      required: true,
+    }),
   };
 
   public async run(): Promise<MetaGoResult> {
     const { flags } = await this.parse(MetaGo);
 
-    const name = flags.name ?? 'world';
-    this.log(`hello ${name} from /Users/raffaele.preziosi/VsCode/sf-meta-go/sf-meta-go/src/commands/meta/go.ts`);
-    return {
-      path: '/Users/raffaele.preziosi/VsCode/sf-meta-go/sf-meta-go/src/commands/meta/go.ts',
-    };
+    try {
+      const conn: Connection = flags.targetusername.getConnection();
+      await go(conn, flags.metadata);
+      return {
+        isSuccess: true,
+      };
+    } catch (exception) {
+      const err = exception instanceof Error ? exception.message : String(exception);
+      this.log(`Error to open Metadata: ${err}`);
+      return {
+        isSuccess: false,
+        error: err,
+      };
+    }
   }
 }

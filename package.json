@@ -1,7 +1,7 @@
 {
   "name": "sf-meta-go",
   "description": "Quick open metadata in the browser",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "dependencies": {
     "@oclif/core": "^4",
     "@salesforce/core": "^8",

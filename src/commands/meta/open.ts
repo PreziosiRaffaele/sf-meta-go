@@ -3,14 +3,14 @@ import { Messages, Connection } from '@salesforce/core';
 import { go } from '../../OpenMetadataHandler.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('sf-meta-go', 'meta.go');
+const messages = Messages.loadMessages('sf-meta-open', 'meta.open');
 
-export type MetaGoResult = {
+export type MetaOpenResult = {
   isSuccess: boolean;
   error?: string;
 };
 
-export default class MetaGo extends SfCommand<MetaGoResult> {
+export default class MetaOpen extends SfCommand<MetaOpenResult> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -29,8 +29,8 @@ export default class MetaGo extends SfCommand<MetaGoResult> {
     }),
   };
 
-  public async run(): Promise<MetaGoResult> {
-    const { flags } = await this.parse(MetaGo);
+  public async run(): Promise<MetaOpenResult> {
+    const { flags } = await this.parse(MetaOpen);
 
     try {
       const conn: Connection = flags.targetusername.getConnection();

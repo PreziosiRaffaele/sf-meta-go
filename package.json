@@ -1,7 +1,7 @@
 {
   "name": "sf-meta-go",
   "description": "Quick open metadata in the browser",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "dependencies": {
     "@oclif/core": "^4",
     "@salesforce/core": "^8",
@@ -58,7 +58,6 @@
     "format": "wireit",
     "link-check": "wireit",
     "lint": "wireit",
-    "postinstall": "yarn husky install",
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "sf-prepack",
     "test": "wireit",

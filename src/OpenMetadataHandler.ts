@@ -115,7 +115,7 @@ class ApprovalProcess extends Metadata {
       }' AND Type = 'Approval'`
     );
 
-    if (res.records.length === 0) {
+    if (res.records.length === 0 || res.records[0].Id === undefined) {
       throw new Error(`Approval process not found for ${this.metadataApiName}`);
     }
 
@@ -143,7 +143,7 @@ class GlobalValueSet extends Metadata {
       .find({ DeveloperName: this.metadataApiName })
       .execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`GlobalValueSet not found for ${this.metadataApiName}`);
     }
     return `lightning/setup/Picklists/page?address=%2F${records[0].Id}`;
@@ -164,7 +164,7 @@ class QuickAction extends Metadata {
 
     const [objectId, quickActionRecords] = await Promise.all([objIdPromise, quickActionPromise]);
 
-    if (quickActionRecords.length === 0) {
+    if (quickActionRecords.length === 0 || quickActionRecords[0].Id === undefined) {
       throw new Error(`QuickAction not found for ${quickActionName}`);
     }
 
@@ -186,7 +186,7 @@ class PageLayout extends Metadata {
 
     const [objectId, layoutRecords] = await Promise.all([objIdPromise, layoutPromise]);
 
-    if (layoutRecords.length === 0) {
+    if (layoutRecords.length === 0 || layoutRecords[0].Id === undefined) {
       throw new Error(`Layout not found for ${layoutName}`);
     }
 
@@ -206,7 +206,7 @@ class RecordType extends Metadata {
 
     const [objectId, recordTypeResult] = await Promise.all([objIdPromise, recordTypePromise]);
 
-    if (recordTypeResult.records.length === 0) {
+    if (recordTypeResult.records.length === 0 || recordTypeResult.records[0].Id === undefined) {
       throw new Error(`RecordType not found for ${this.metadataApiName}`);
     }
 
@@ -221,7 +221,7 @@ class Flow extends Metadata {
       .find({ DeveloperName: this.metadataApiName })
       .execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`Flow not found for ${this.metadataApiName}`);
     }
 
@@ -236,7 +236,7 @@ class ValidationRule extends Metadata {
       .find({ ValidationName: this.metadataApiName })
       .execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`ValidationRule not found for ${this.metadataApiName}`);
     }
 
@@ -251,7 +251,7 @@ class FlexiPage extends Metadata {
       .find({ DeveloperName: this.metadataApiName })
       .execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`FlexiPage not found for ${this.metadataApiName}`);
     }
 
@@ -263,7 +263,7 @@ class Profile extends Metadata {
   public async getUrl(): Promise<string> {
     const records = await this.conn.tooling.sobject('Profile').find({ Name: this.metadataApiName }).execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`Profile not found for ${this.metadataApiName}`);
     }
 
@@ -275,7 +275,7 @@ class PermissionSet extends Metadata {
   public async getUrl(): Promise<string> {
     const records = await this.conn.tooling.sobject('PermissionSet').find({ Name: this.metadataApiName }).execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`PermissionSet not found for ${this.metadataApiName}`);
     }
 
@@ -290,7 +290,7 @@ class PermissionSetGroup extends Metadata {
       .find({ DeveloperName: this.metadataApiName })
       .execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`PermissionSetGroup not found for ${this.metadataApiName}`);
     }
 
@@ -302,7 +302,7 @@ class ApexClass extends Metadata {
   public async getUrl(): Promise<string> {
     const records = await this.conn.tooling.sobject('ApexClass').find({ Name: this.metadataApiName }).execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`ApexClass not found for ${this.metadataApiName}`);
     }
 
@@ -314,7 +314,7 @@ class ApexTrigger extends Metadata {
   public async getUrl(): Promise<string> {
     const records = await this.conn.tooling.sobject('ApexTrigger').find({ Name: this.metadataApiName }).execute();
 
-    if (records.length === 0) {
+    if (records.length === 0 || records[0].Id === undefined) {
       throw new Error(`ApexTrigger not found for ${this.metadataApiName}`);
     }
 
@@ -343,18 +343,16 @@ class Field extends Metadata {
         .find({ DeveloperName: this.metadataApiName, TableEnumOrId: objectId })
         .execute();
 
-      if (fieldRecords.length === 0) {
+      if (fieldRecords.length === 0 || fieldRecords[0].Id === undefined) {
         throw new Error(`Field not found for ${this.metadataApiName}`);
       }
 
-      const fieldData = fieldRecords[0];
-
       if (isCustomMetadata(objectFolderName)) {
-        url = `lightning/setup/CustomMetadata/page?address=%2F${fieldData.Id}%3Fsetupid%3DCustomMetadata`;
+        url = `lightning/setup/CustomMetadata/page?address=%2F${fieldRecords[0].Id}%3Fsetupid%3DCustomMetadata`;
       } else if (isPlatformEvent(objectFolderName)) {
-        url = `lightning/setup/EventObjects/page?address=%2F${fieldData.Id}%3Fsetupid%3DEventObjects`;
+        url = `lightning/setup/EventObjects/page?address=%2F${fieldRecords[0].Id}%3Fsetupid%3DEventObjects`;
       } else {
-        url = `lightning/setup/ObjectManager/${objectId}/FieldsAndRelationships/${fieldData.Id}/view`;
+        url = `lightning/setup/ObjectManager/${objectId}/FieldsAndRelationships/${fieldRecords[0].Id}/view`;
       }
     }
     return url;
